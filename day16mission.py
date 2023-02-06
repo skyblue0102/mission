@@ -1,44 +1,76 @@
-#ch5 ex 2
+import random
+import math
 
-## 클래스와 함수 선언 부분
+## 클래스와 함수 선언 부분 ##
 class Node() :
 	def __init__ (self) :
-		self.plink = None #앞
 		self.data = None
-		self.nlink = None  #뒤
+		self.link = None
 
-def printNodes(start):
+def printStores(start) :
 	current = start
-	if current.nlink == None :
+	if current == None :
 		return
-	print("정방향 --> ", end=' ')
-	print(current.data, end=' ')
-	while current.nlink != None:
-		current = current.nlink
-		print(current.data, end=' ')
+
+	while current.link != head:
+		current = current.link
+		x, y = current.data[1:]
+		print(current.data[0], '편의점, 거리:', math.sqrt(x*x + y*y))
 	print()
-	print("역방향 --> ", end=' ')
-	print(current.data, end=' ')
-	while current.plink != None:
-		current = current.plink
-		print(current.data, end=' ')
+
+def  StoreList(store) :
+	global head, current, pre
+
+	node = Node()
+	node.data = store
+
+	if head == None :
+		head = node
+		node.link = head
+		return
+
+	nodeX, nodeY = node.data[1:]
+	nodeDistance = math.sqrt(nodeX*nodeX + nodeY*nodeY)
+	headX, headY = head.data[1:]
+	headDistance = math.sqrt(headX*headX + headY*headY)
+
+	if headDistance > nodeDistance :
+		node.link = head
+		last = head
+		while last.link != head :
+			last = last.link
+		last.link = node
+		head = node
+		return
+
+	current = head
+	while current.link != head :
+		pre = current
+		current = current.link
+		currX, currY = current.data[1:]
+		currDistance = math.sqrt(currX*currX + currY*currY)
+		if currDistance > nodeDistance :
+			pre.link = node
+			node.link = current
+			return
+
+	current.link = node
+	node.link = head
 
 ## 전역 변수
 head, current, pre = None, None, None
-dataArray = ["다현", "정연", "쯔위", "사나", "지효"]
 
 ## 메인 코드
 if __name__ == "__main__" :
 
-	node = Node()			# 첫 번째 노드
-	node.data = dataArray[0]
-	head = node
+	storeArray = []
+	storeName = 'A'
+	for _ in range(10) :
+		store = (storeName, random.randint(1, 100), random.randint(1, 100) )
+		storeArray.append(store)
+		storeName = chr(ord(storeName) + 1)
 
-	for data in dataArray[1:] :		# 두 번째 이후 노드
-		pre = node
-		node = Node()
-		node.data = data
-		pre.nlink = node
-		node.plink = pre
+	for store in storeArray :
+		StoreList(store)
 
-	printNodes(head)
+	printStores(head)
