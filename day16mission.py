@@ -1,76 +1,63 @@
 import random
-import math
 
-## 클래스와 함수 선언 부분 ##
-class Node() :
-	def __init__ (self) :
-		self.data = None
-		self.link = None
+## 함수 선언 부분 ##
+def isStackFull() :
+	global SIZE, stack, top
+	if (top >= SIZE-1) :
+		return True
+	else :
+		return False
 
-def printStores(start) :
-	current = start
-	if current == None :
+def isStackEmpty() :
+	global SIZE, stack, top
+	if (top == -1) :
+		return True
+	else :
+		return False
+
+def push(data) :
+	global SIZE, stack, top
+	if (isStackFull()) :
 		return
+	top += 1
+	stack[top] = data
 
-	while current.link != head:
-		current = current.link
-		x, y = current.data[1:]
-		print(current.data[0], '편의점, 거리:', math.sqrt(x*x + y*y))
-	print()
+def pop() :
+	global SIZE, stack, top
+	if (isStackEmpty()) :
+		return None
+	data = stack[top]
+	stack[top] = None
+	top -= 1
+	return data
 
-def  StoreList(store) :
-	global head, current, pre
+def peek() :
+	global SIZE, stack, top
+	if (isStackEmpty()) :
+		return None
+	return stack[top]
 
-	node = Node()
-	node.data = store
+## 전역 변수 선언 부분 ##
+SIZE = 10
+stack = [ None for _ in range(SIZE) ]
+top = -1
 
-	if head == None :
-		head = node
-		node.link = head
-		return
-
-	nodeX, nodeY = node.data[1:]
-	nodeDistance = math.sqrt(nodeX*nodeX + nodeY*nodeY)
-	headX, headY = head.data[1:]
-	headDistance = math.sqrt(headX*headX + headY*headY)
-
-	if headDistance > nodeDistance :
-		node.link = head
-		last = head
-		while last.link != head :
-			last = last.link
-		last.link = node
-		head = node
-		return
-
-	current = head
-	while current.link != head :
-		pre = current
-		current = current.link
-		currX, currY = current.data[1:]
-		currDistance = math.sqrt(currX*currX + currY*currY)
-		if currDistance > nodeDistance :
-			pre.link = node
-			node.link = current
-			return
-
-	current.link = node
-	node.link = head
-
-## 전역 변수
-head, current, pre = None, None, None
-
-## 메인 코드
+## 메인 코드 부분 ##
 if __name__ == "__main__" :
 
-	storeArray = []
-	storeName = 'A'
-	for _ in range(10) :
-		store = (storeName, random.randint(1, 100), random.randint(1, 100) )
-		storeArray.append(store)
-		storeName = chr(ord(storeName) + 1)
+	stoneAry = ["빨강", "파랑", "초록", "노랑", "보라", "주황"]
+	random.shuffle(stoneAry)
 
-	for store in storeArray :
-		StoreList(store)
+	print("과자집에 가는길 : ", end = ' ')
+	for stone in stoneAry :
+		push(stone)
+		print(stone, "-->", end = ' ')
+	print("과자집")
 
-	printStores(head)
+	print("우리집에 오는길 : ", end = ' ')
+	while True :
+		stone = pop()
+		if stone == None :
+			break
+		print(stone, "-->", end = ' ')
+	print("우리집")
