@@ -1,6 +1,4 @@
 #ch 7 ex 2
-import math
-
 
 def isQueuefull():
 	global SIZE, queue, front, rear
